@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
 import {NzContentComponent, NzFooterComponent, NzLayoutComponent} from 'ng-zorro-antd/layout';
-import {ToolbarComponent} from './components/toolbar/toolbar.component';
+import {ToolbarComponent} from './core/components/toolbar/toolbar.component';
+import {AuthService} from './auth/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -9,6 +10,14 @@ import {ToolbarComponent} from './components/toolbar/toolbar.component';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'notes-final-project';
+
+
+  constructor(private authService: AuthService) {
+  }
+
+  ngOnInit() {
+    this.authService.autoLogin()
+  }
 }
