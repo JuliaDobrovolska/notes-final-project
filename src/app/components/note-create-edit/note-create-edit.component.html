@@ -1,0 +1,19 @@
+<nz-card class="note-card" [nzTitle]="cardTitle">
+  <form nz-form [formGroup]="noteForm" class="login-form" (ngSubmit)="saveNote()" nzLayout="vertical">
+    <nz-form-item class="note-form-margin">
+      <nz-form-label nzRequired>Заголовок</nz-form-label>
+      <nz-form-control nzErrorTip="Будь ласка, введіть заголовок!">
+        <input type="text" nz-input formControlName="title"/>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item class="note-form-margin">
+      <nz-form-label nzRequired>Вміст нотатки</nz-form-label>
+      <nz-form-control nzErrorTip="Будь ласка, введіть вміст нотатки!">
+        <textarea nz-input formControlName="content" rows="6"></textarea>
+      </nz-form-control>
+    </nz-form-item>
+    <button nz-button class="note-form-button note-form-margin" [nzType]="'primary'">Зберегти</button>
+  </form>
+
+
+</nz-card>

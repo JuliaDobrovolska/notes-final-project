@@ -1,0 +1,10 @@
+<nz-input-group [nzSuffix]="suffixTemplate">
+  <input nz-input [(ngModel)]="searchTerm" placeholder="Пошук нотатки" (ngModelChange)="onSearch()">
+</nz-input-group>
+<ng-template #suffixTemplate>
+  <nz-icon
+    class="ant-input-password-icon"
+    nzType="close-circle"
+    (click)="searchTerm=''; onSearch()"
+  />
+</ng-template>

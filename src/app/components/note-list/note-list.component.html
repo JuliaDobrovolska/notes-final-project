@@ -1,0 +1,44 @@
+@if (filteredNotes && filteredNotes.length > 0) {
+  <nz-list nzGrid>
+    <div nz-row>
+      @for (item of filteredNotes; track item) {
+        <nz-card nz-col nzSpan="6"
+                 [nzActions]="[actionOpen, actionEdit, actionDelete]">
+          <nz-card-meta
+            [nzAvatar]="avatarTemplate"
+            [nzTitle]="item.title"
+            [nzDescription]="item.content"
+          ></nz-card-meta>
+        </nz-card>
+        <ng-template #avatarTemplate>
+          <nz-avatar nzSrc="/assets/images/notes.png" nzShape="square"></nz-avatar>
+        </ng-template>
+        <ng-template #actionOpen>
+          <nz-icon nzType="zoom-in" [routerLink]="['/'+ item.id]" nzTooltipTitle="Показати деталі"
+                   nzTooltipPlacement="bottom"
+                   nz-tooltip/>
+        </ng-template>
+        <ng-template #actionEdit>
+          <nz-icon nzType="edit" nzTooltipTitle="Редагувати" [routerLink]="['/edit/'+ item.id]" nzTooltipPlacement="bottom" nz-tooltip/>
+        </ng-template>
+        <ng-template #actionDelete>
+          <nz-icon nzType="delete" nzTooltipTitle="Видалити" nzTooltipPlacement="bottom" nz-tooltip
+                   nz-popconfirm
+                   nzPopconfirmTitle="Ви впевнені, що хочете видалити цю нотатку?"
+                   nzPopconfirmPlacement="bottom"
+                   nzOkText="Видалити"
+                   nzOkType="danger"
+                   (nzOnConfirm)="onDelete(item.id)"
+
+          />
+        </ng-template>
+      }
+    </div>
+  </nz-list>
+} @else {
+  <nz-empty class="note-list-empty" nzNotFoundContent="Додайте свою першу нотатку"></nz-empty>
+}
+
+
+
+
