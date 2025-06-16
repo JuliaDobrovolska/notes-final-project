@@ -10,7 +10,7 @@
     <nz-avatar [nzSize]="64" nzSrc="/assets/images/notes.png" nzShape="square"></nz-avatar>
   </ng-template>
   <ng-template #actionEdit>
-    <nz-icon nzType="edit" nzTooltipTitle="Редагувати" nzTooltipPlacement="bottom" nz-tooltip/>
+    <nz-icon nzType="edit" nzTooltipTitle="Редагувати" [routerLink]="['/edit/'+ note.id]" nzTooltipPlacement="bottom" nz-tooltip/>
   </ng-template>
   <ng-template #actionDelete>
     <nz-icon nzType="delete" nzTooltipTitle="Видалити" nzTooltipPlacement="bottom" nz-tooltip

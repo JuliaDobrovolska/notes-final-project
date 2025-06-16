@@ -1,12 +1,24 @@
-import { Routes } from '@angular/router';
-import {NoteCreateComponent} from './components/note-create/note-create.component';
-import {NoteEditComponent} from './components/note-edit/note-edit.component';
-import {NoteItemComponent} from './components/note-item/note-item.component';
-import {NoteListComponent} from './components/note-list/note-list.component';
+import {Routes} from '@angular/router';
 
 export const routes: Routes = [
-  { path: '', component: NoteListComponent },
-  { path: 'create', component: NoteCreateComponent },
-  { path: ':id', component: NoteItemComponent },
-  { path: 'edit/:id', component: NoteCreateComponent },
+  {
+    path: '',
+    loadComponent: () =>
+      import('./components/note-list/note-list.component').then(m => m.NoteListComponent),
+  },
+  {
+    path: 'create',
+    loadComponent: () =>
+      import('./components/note-create-edit/note-create-edit.component').then(m => m.NoteCreateEditComponent),
+  },
+  {
+    path: ':id',
+    loadComponent: () =>
+      import('./components/note-item/note-item.component').then(m => m.NoteItemComponent),
+  },
+  {
+    path: 'edit/:id',
+    loadComponent: () =>
+      import('./components/note-create-edit/note-create-edit.component').then(m => m.NoteCreateEditComponent),
+  },
 ];

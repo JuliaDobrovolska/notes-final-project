@@ -36,6 +36,7 @@ export class NoteCreateEditComponent implements OnInit {
   noteForm!: FormGroup;
   cardTitle = '';
   noteId!: number;
+  mode: 'create' | 'edit' = 'create';
 
 
   ngOnInit() {
@@ -47,8 +48,9 @@ export class NoteCreateEditComponent implements OnInit {
 
   saveNote() {
     if (this.noteForm?.valid) {
-      this.noteId ? this.noteService.updateNote(this.noteId, this.noteForm.getRawValue()) :
-        this.noteService.addNote(this.noteForm.getRawValue());
+      console.log(this.mode)
+      this.mode == 'create' ? this.noteService.addNote(this.noteForm.getRawValue()) :
+        this.noteService.updateNote(this.noteId, this.noteForm.getRawValue());
       this.router.navigate(['/']);
     } else {
       Object.values(this.noteForm.controls).forEach(control => {
@@ -69,6 +71,9 @@ export class NoteCreateEditComponent implements OnInit {
   }
 
   private patchFormDuringUpdate() {
+    this.mode = this.route.snapshot.paramMap.get('id') ? 'edit' : 'create';
+    if (this.mode == 'create') return;
+
     this.noteId = Number(this.route.snapshot.paramMap.get('id'));
     const note = this.noteService.getNote(this.noteId);
     if (note) {
