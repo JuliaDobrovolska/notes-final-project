@@ -116,7 +116,7 @@ app.put('/user/notes/:id', authenticate, (req, res) => {
         {new: true}
     )
         .then((note) => {
-            if (!note) return res.status(404).json({message: 'Note not found '});
+            if (!note) return res.status(404).json({message: 'Note not found'});
             res.status(200).json({message: 'Note updated', note});
         })
         .catch((err) => res.status(500).json({message: 'Something went wrong', error: err}));
@@ -126,7 +126,7 @@ app.put('/user/notes/:id', authenticate, (req, res) => {
 app.delete('/user/notes/:id', authenticate, (req, res) => {
     Note.findOneAndDelete({_id: req.params.id, user: req.userData.userId})
         .then((note) => {
-            if (!note) return res.status(404).json({message: 'Note not found '});
+            if (!note) return res.status(404).json({message: 'Note not found'});
             res.status(200).json({message: 'Note deleted'});
         })
         .catch((err) => res.status(500).json({message: 'Something went wrong', error: err}));
