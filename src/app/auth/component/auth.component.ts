@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component, DestroyRef, inject, OnDestroy} from '@angular/core';
 import {Subscription} from "rxjs";
 import {Router} from "@angular/router";
 import {FormsModule, NgForm, ReactiveFormsModule} from "@angular/forms";
@@ -9,6 +9,7 @@ import {NzCheckboxModule} from 'ng-zorro-antd/checkbox';
 import {NzButtonModule} from 'ng-zorro-antd/button';
 import {NzFormModule} from 'ng-zorro-antd/form';
 import {NzInputModule} from 'ng-zorro-antd/input';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-auth',
@@ -30,10 +31,11 @@ export class AuthComponent implements OnDestroy {
   loading = false;
   error = ''
 
-  private userSub: Subscription | undefined;
+  private readonly userSub: Subscription | undefined;
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
-  constructor(public authService: AuthService, public router: Router) {
-  }
 
   onSwitchMode() {
     this.isLoginMode = !this.isLoginMode;
@@ -48,8 +50,8 @@ export class AuthComponent implements OnDestroy {
     this.loading = true;
     console.log("isLoginMode", this.isLoginMode);
     if (this.isLoginMode) {
-      this.authService.login(email, password).subscribe({
-        next: response => {
+      this.authService.login(email, password).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        next: () => {
           this.loading = false;
           this.authService.autoLogout(3600)
           this.router.navigate(["/notes"])
@@ -59,8 +61,8 @@ export class AuthComponent implements OnDestroy {
         }
       })
     } else {
-      this.authService.signup(email, password).subscribe({
-        next: response => {
+      this.authService.signup(email, password).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        next: () => {
           this.loading = false;
           this.authService.autoLogout(3600)
           this.router.navigate(["/notes"])

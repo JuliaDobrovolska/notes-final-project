@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, DestroyRef, inject} from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {Note} from '../../models/note.module';
 import {NzAvatarComponent} from 'ng-zorro-antd/avatar';
@@ -12,6 +12,7 @@ import {NoteHttpService} from '../../services/note-http-service';
 import {NzSpinComponent} from 'ng-zorro-antd/spin';
 import {NgIf} from '@angular/common';
 import {NoteSearchService} from '../note-search/note-search.service';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-note-item',
@@ -41,13 +42,14 @@ export class NoteItemComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly nzMessageService = inject(NzMessageService);
+  private readonly destroyRef = inject(DestroyRef);
 
 
   constructor() {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) return;
 
-    this.noteHttpService.getNote(id).subscribe({
+    this.noteHttpService.getNote(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (note) => {
         this.note = note;
         this.isLoading = false;
@@ -60,7 +62,7 @@ export class NoteItemComponent {
 
 
   onDelete(id: string) {
-    this.noteHttpService.deleteNote(id).subscribe(() => {
+    this.noteHttpService.deleteNote(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.nzMessageService.info('Нотатку видалено');
       this.noteSearchService.clearSearchTerm();
       this.router.navigate(['/notes']);

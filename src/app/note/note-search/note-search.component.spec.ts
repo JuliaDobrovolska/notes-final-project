@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { NoteSearchComponent } from './note-search.component';
+import {NoteSearchComponent} from './note-search.component';
 
 describe('NoteSearchComponent', () => {
   let component: NoteSearchComponent;

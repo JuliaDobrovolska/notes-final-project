@@ -1,13 +1,10 @@
 import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {Note} from '../../models/note.module';
 import {FormsModule} from '@angular/forms';
-import {NzListComponent, NzListItemComponent} from 'ng-zorro-antd/list';
-import {NzInputDirective} from 'ng-zorro-antd/input';
-import {NzButtonComponent} from 'ng-zorro-antd/button';
+import {NzListComponent} from 'ng-zorro-antd/list';
 import {RouterLink} from '@angular/router';
 import {NzColDirective, NzGridModule, NzRowDirective} from 'ng-zorro-antd/grid';
 import {NzCardComponent, NzCardMetaComponent} from 'ng-zorro-antd/card';
-import {BehaviorSubject} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {NzEmptyComponent} from 'ng-zorro-antd/empty';
 import {NzAvatarComponent} from 'ng-zorro-antd/avatar';
@@ -71,7 +68,7 @@ export class NoteListComponent implements OnInit {
   }
 
   onDelete(id: string) {
-    this.noteHttpService.deleteNote(id).subscribe(() => {
+    this.noteHttpService.deleteNote(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.nzMessageService.info('Нотатку видалено');
       this.noteSearchService.clearSearchTerm();
       this.getNoteList();

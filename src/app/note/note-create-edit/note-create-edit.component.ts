@@ -1,20 +1,14 @@
-import {Component, OnInit, inject} from '@angular/core';
+import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule} from '@angular/forms';
-import {
-  NzInputDirective,
-} from 'ng-zorro-antd/input';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {NzInputDirective,} from 'ng-zorro-antd/input';
 import {NzButtonComponent} from 'ng-zorro-antd/button';
 import {NzCardComponent} from 'ng-zorro-antd/card';
-import {
-  NzFormControlComponent,
-  NzFormDirective,
-  NzFormItemComponent,
-  NzFormLabelComponent
-} from 'ng-zorro-antd/form';
+import {NzFormControlComponent, NzFormDirective, NzFormItemComponent, NzFormLabelComponent} from 'ng-zorro-antd/form';
 import {NzColDirective, NzGridModule} from 'ng-zorro-antd/grid';
 import {NoteHttpService} from '../../services/note-http-service';
 import {NoteSearchService} from '../note-search/note-search.service';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-note-create-edit',
@@ -41,6 +35,7 @@ export class NoteCreateEditComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
 
   noteForm!: FormGroup;
   cardTitle = '';
@@ -65,7 +60,7 @@ export class NoteCreateEditComponent implements OnInit {
     this.cardTitle = this.isEditMode ? 'Редагувати нотатку' : 'Створити нотатку';
 
     if (this.isEditMode) {
-      this.noteHttpService.getNote(this.noteId!).subscribe(note => {
+      this.noteHttpService.getNote(this.noteId!).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(note => {
         this.noteForm.patchValue(note);
       });
     }
@@ -82,7 +77,7 @@ export class NoteCreateEditComponent implements OnInit {
       ? this.noteHttpService.updateNote(this.noteId!, noteData)
       : this.noteHttpService.createNote(noteData);
 
-    request$.subscribe(() => {
+    request$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.noteSearchService.clearSearchTerm();
       this.router.navigate(['/notes'])
     });

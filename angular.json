@@ -105,18 +105,29 @@
                 "glob": "**/*",
                 "input": "public"
               }
-
             ],
             "styles": [
               "src/styles.scss"
             ],
             "scripts": []
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
   },
   "cli": {
-    "analytics": "ed9c4109-899b-49df-a686-9526bad28766"
+    "analytics": "ed9c4109-899b-49df-a686-9526bad28766",
+    "schematicCollections": [
+      "angular-eslint"
+    ]
   }
 }

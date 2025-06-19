@@ -1,4 +1,4 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, DestroyRef, inject, OnDestroy, OnInit} from '@angular/core';
 import {NzPageHeaderComponent, NzPageHeaderExtraDirective, NzPageHeaderModule} from 'ng-zorro-antd/page-header';
 import {NzSpaceComponent, NzSpaceItemDirective, NzSpaceModule} from 'ng-zorro-antd/space';
 import {NzButtonComponent, NzButtonModule} from 'ng-zorro-antd/button';
@@ -16,6 +16,7 @@ import {NgIf} from "@angular/common";
 import {NoteSearchService} from '../../../note/note-search/note-search.service';
 import {NzAvatarModule} from 'ng-zorro-antd/avatar';
 import {NzPopoverDirective} from 'ng-zorro-antd/popover';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-toolbar',
@@ -48,6 +49,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   protected readonly noteSearchService = inject(NoteSearchService);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
 
   private userSub: Subscription | undefined;
   isAuthenticated = false;
@@ -59,7 +61,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.userSub = this.authService.user.subscribe({
+    this.userSub = this.authService.user.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: user => {
           console.log("user", user);
           this.isAuthenticated = !!user?.token;

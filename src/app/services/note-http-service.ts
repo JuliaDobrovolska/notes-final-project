@@ -22,19 +22,19 @@ export class NoteHttpService {
   }
 
 
-  createNote(note: Note): Observable<any> {
+  createNote(note: Note) {
     console.log("create note", note)
-    return this.http.post(`${SERVER_URL}/user/notes`, note);
+    return this.http.post<{ note: Note }>(`${SERVER_URL}/user/notes`, note);
   }
 
 
-  updateNote(id: string, note: Note): Observable<any> {
-    return this.http.put(`${SERVER_URL}/user/notes/${id}`, note);
+  updateNote(id: string, note: Note) {
+    return this.http.put<{ note: Note }>(`${SERVER_URL}/user/notes/${id}`, note);
   }
 
 
-  deleteNote(id: string): Observable<any> {
-    return this.http.delete(`${SERVER_URL}/user/notes/${id}`);
+  deleteNote(id: string) {
+    return this.http.delete<{ note: Note }>(`${SERVER_URL}/user/notes/${id}`);
   }
 
 }

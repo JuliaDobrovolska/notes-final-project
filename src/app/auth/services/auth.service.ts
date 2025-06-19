@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {BehaviorSubject, tap} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
@@ -12,14 +12,15 @@ export interface User {
   providedIn: 'root'
 })
 export class AuthService {
+  private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
+
+
   userSubject = new BehaviorSubject<User | null>(null);
   private tokenExpirationTime: any | undefined
 
   get user() {
     return this.userSubject.asObservable();
-  }
-
-  constructor(private http: HttpClient, private router: Router) {
   }
 
   signup(email: string, password: string) {
