@@ -39,7 +39,7 @@ app.post('/signup', (req, res) => {
 app.post('/login', (req, res) => {
     User.findOne({email: req.body.email}).then((user) => {
         if (!user) {
-            res.status(404).send({message: 'User Not Found'});
+            return res.status(404).send({message: 'User Not Found'});
         }
 
         bcrypt.compare(req.body.password, user.password).then(match => {
