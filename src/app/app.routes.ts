@@ -4,7 +4,7 @@ import {canActivateAuthGuard} from './auth/guards/canActivateAuth.guard';
 
 export const routes: Routes = [
 
-  {path: '', redirectTo: '/auth', pathMatch: 'full'},
+  {path: '', redirectTo: '/notes', pathMatch: 'full'},
   {path: 'auth', component: AuthComponent},
   {
     path: 'notes', children: [

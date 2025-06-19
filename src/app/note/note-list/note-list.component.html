@@ -14,12 +14,13 @@
           <nz-avatar nzSrc="/assets/images/notes.png" nzShape="square"></nz-avatar>
         </ng-template>
         <ng-template #actionOpen>
-          <nz-icon nzType="zoom-in" [routerLink]="['/'+ item.id]" nzTooltipTitle="Показати деталі"
+          <nz-icon nzType="zoom-in" [routerLink]="['/notes/'+ item._id]" nzTooltipTitle="Показати деталі"
                    nzTooltipPlacement="bottom"
                    nz-tooltip/>
         </ng-template>
         <ng-template #actionEdit>
-          <nz-icon nzType="edit" nzTooltipTitle="Редагувати" [routerLink]="['/edit/'+ item.id]" nzTooltipPlacement="bottom" nz-tooltip/>
+          <nz-icon nzType="edit" nzTooltipTitle="Редагувати" [routerLink]="['/notes/edit/'+ item._id]"
+                   nzTooltipPlacement="bottom" nz-tooltip/>
         </ng-template>
         <ng-template #actionDelete>
           <nz-icon nzType="delete" nzTooltipTitle="Видалити" nzTooltipPlacement="bottom" nz-tooltip
@@ -28,7 +29,7 @@
                    nzPopconfirmPlacement="bottom"
                    nzOkText="Видалити"
                    nzOkType="danger"
-                   (nzOnConfirm)="onDelete(item.id)"
+                   (nzOnConfirm)="onDelete(item._id)"
 
           />
         </ng-template>
@@ -36,7 +37,11 @@
     </div>
   </nz-list>
 } @else {
-  <nz-empty class="note-list-empty" nzNotFoundContent="Додайте свою першу нотатку"></nz-empty>
+  <nz-empty class="note-list-empty"
+            [nzNotFoundContent]="noteSearchService.isSearchTermExist() ? 'Упс, нотатка не знайдена': 'Додайте свою першу нотатку'"
+            [nzNotFoundImage]="noteSearchService.isSearchTermExist() ? 'simple': null"
+
+  ></nz-empty>
 }
 
 

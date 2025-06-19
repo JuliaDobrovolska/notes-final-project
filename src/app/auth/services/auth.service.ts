@@ -35,10 +35,12 @@ export class AuthService {
   }
 
   autoLogin() {
+    console.log('auto login');
     const userData = JSON.parse(localStorage.getItem('userData') || '{}');
     if (!userData) {
       return
     }
+    console.log("auto login userData", userData);
     this.userSubject.next(userData);
     this.autoLogout(3600)
   }

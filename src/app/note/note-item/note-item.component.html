@@ -1,27 +1,32 @@
-@if (note) {
-  <nz-card [nzActions]="[ actionEdit, actionDelete]">
-    <nz-card-meta
-      [nzAvatar]="avatarTemplate"
-      [nzTitle]="note.title"
-      [nzDescription]="note.content"
-    ></nz-card-meta>
-  </nz-card>
-  <ng-template #avatarTemplate>
-    <nz-avatar [nzSize]="64" nzSrc="/assets/images/notes.png" nzShape="square"></nz-avatar>
-  </ng-template>
-  <ng-template #actionEdit>
-    <nz-icon nzType="edit" nzTooltipTitle="Редагувати" [routerLink]="['/edit/'+ note.id]" nzTooltipPlacement="bottom" nz-tooltip/>
-  </ng-template>
-  <ng-template #actionDelete>
-    <nz-icon nzType="delete" nzTooltipTitle="Видалити" nzTooltipPlacement="bottom" nz-tooltip
-             nz-popconfirm
-             nzPopconfirmTitle="Ви впевнені, що хочете видалити цю нотатку?"
-             nzPopconfirmPlacement="bottom"
-             nzOkText="Видалити"
-             nzOkType="danger"
-             (nzOnConfirm)="note ? onDelete(note.id): null"
-    />
-  </ng-template>
-} @else {
-  <nz-empty class="note-list-empty" nzNotFoundContent="Упс, нотатка не знайдена"></nz-empty>
-}
+<nz-spin *ngIf="isLoading" nzTip="Завантаження..."></nz-spin>
+
+<ng-container *ngIf="!isLoading">
+  @if (note) {
+    <nz-card [nzActions]="[ actionEdit, actionDelete]">
+      <nz-card-meta
+        [nzAvatar]="avatarTemplate"
+        [nzTitle]="note.title"
+        [nzDescription]="note.content"
+      ></nz-card-meta>
+    </nz-card>
+    <ng-template #avatarTemplate>
+      <nz-avatar [nzSize]="64" nzSrc="/assets/images/notes.png" nzShape="square"></nz-avatar>
+    </ng-template>
+    <ng-template #actionEdit>
+      <nz-icon nzType="edit" nzTooltipTitle="Редагувати" [routerLink]="['/notes/edit/'+ note._id]"
+               nzTooltipPlacement="bottom" nz-tooltip/>
+    </ng-template>
+    <ng-template #actionDelete>
+      <nz-icon nzType="delete" nzTooltipTitle="Видалити" nzTooltipPlacement="bottom" nz-tooltip
+               nz-popconfirm
+               nzPopconfirmTitle="Ви впевнені, що хочете видалити цю нотатку?"
+               nzPopconfirmPlacement="bottom"
+               nzOkText="Видалити"
+               nzOkType="danger"
+               (nzOnConfirm)="note ? onDelete(note._id): null"
+      />
+    </ng-template>
+  } @else {
+    <nz-empty class="note-list-empty" nzNotFoundContent="Упс, нотатка не знайдена"></nz-empty>
+  }
+</ng-container>

@@ -7,7 +7,9 @@ import {registerLocaleData} from '@angular/common';
 import uk from '@angular/common/locales/uk';
 import {FormsModule} from '@angular/forms';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
-import {provideHttpClient} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {AuthInterceptorService} from './auth/interceptors/auth-interceptor.service';
+import { UnauthorizedInterceptor } from './auth/interceptors/unauthorized-interseptor.service';
 
 registerLocaleData(uk);
 
@@ -17,5 +19,9 @@ export const appConfig: ApplicationConfig = {
     provideNzI18n(uk_UA),
     importProvidersFrom(FormsModule),
     provideAnimationsAsync(),
-    provideHttpClient()]
+    provideHttpClient(withInterceptorsFromDi()),
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true}
+
+  ]
 };

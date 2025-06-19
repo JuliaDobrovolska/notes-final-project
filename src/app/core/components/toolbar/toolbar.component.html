@@ -1,13 +1,25 @@
 <nz-page-header>
-  <nz-page-header-title [routerLink]="['/']">Нотатки</nz-page-header-title>
-  @if (isAuthenticated) {
-    <nz-page-header-tags class="header-tags">
-      <app-note-search></app-note-search>
-    </nz-page-header-tags>
-    <nz-page-header-extra>
-      <nz-space>
-        <button *nzSpaceItem nz-button nzType="primary" [routerLink]="['/create']">Створити нотатку</button>
-      </nz-space>
-    </nz-page-header-extra>
-  }
+  <nz-page-header-title (click)="navigateToMainMenu()" class="pointer">Нотатки</nz-page-header-title>
+
+  <nz-page-header-tags class="header-tags" *ngIf="isAuthenticated">
+    <app-note-search></app-note-search>
+  </nz-page-header-tags>
+  <nz-page-header-extra *ngIf="isAuthenticated">
+    <nz-space>
+      <button *nzSpaceItem nz-button nzType="primary" [routerLink]="['/notes/create']">Створити нотатку
+      </button>
+    </nz-space>
+    <nz-avatar
+      nz-button
+      nz-popover nzPopoverTrigger="click"
+      [nzPopoverTitle]="user?.email"
+      [nzPopoverContent]="contentTemplate"
+      nzPopoverPlacement="bottomRight"
+      class="header-avatar" nzIcon="user" style="color:#f56a00; background-color:#fde3cf;"></nz-avatar>
+  </nz-page-header-extra>
+
 </nz-page-header>
+
+<ng-template #contentTemplate>
+  <button class="logout-btn" nz-button nzType="default" nzDanger (click)="logout()">Вийти</button>
+</ng-template>

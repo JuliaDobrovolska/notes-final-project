@@ -1,5 +1,4 @@
 import {Component, DestroyRef, inject, OnInit} from '@angular/core';
-import {NoteService} from '../../services/note.service';
 import {Note} from '../../models/note.module';
 import {FormsModule} from '@angular/forms';
 import {NzListComponent, NzListItemComponent} from 'ng-zorro-antd/list';
@@ -16,6 +15,8 @@ import {NzIconDirective} from 'ng-zorro-antd/icon';
 import {NzTooltipDirective} from 'ng-zorro-antd/tooltip';
 import {NzPopconfirmModule} from 'ng-zorro-antd/popconfirm';
 import {NzMessageService} from 'ng-zorro-antd/message';
+import {NoteHttpService} from '../../services/note-http-service';
+import {NoteSearchService} from '../note-search/note-search.service';
 
 @Component({
   selector: 'app-note-list',
@@ -39,32 +40,43 @@ import {NzMessageService} from 'ng-zorro-antd/message';
 })
 export class NoteListComponent implements OnInit {
 
-  private readonly noteService = inject(NoteService);
+  private readonly noteHttpService = inject(NoteHttpService);
+  protected readonly noteSearchService = inject(NoteSearchService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly nzMessageService = inject(NzMessageService);
 
-
-  notes: Note[] = [];
   filteredNotes: Note[] = [];
-  searchTerm = '';
 
+  constructor() {
+    this.noteSearchService.isSearchTermExist() ? this.onSearch() : this.getNoteList();
+
+  }
 
   ngOnInit() {
-    this.notes = this.noteService.getNotes();
-    this.noteService.searchTermObs$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(term => {
-      this.filteredNotes = this.noteService.searchNotes(term);
+    this.onSearch();
+
+  }
+
+  private getNoteList() {
+    this.noteHttpService.getNoteList().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(notes => {
+      this.noteSearchService.notesList = notes;
+      this.filteredNotes = [...this.noteSearchService.notesList];
     });
-    this.filteredNotes = [...this.notes];
   }
 
   onSearch() {
-    this.filteredNotes = this.noteService.searchNotes(this.searchTerm);
+    this.noteSearchService.searchTermObs$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(term => {
+      this.filteredNotes = this.noteSearchService.searchNotes(term);
+    });
   }
 
-  onDelete(id: number) {
-    this.noteService.deleteNote(id);
-    this.nzMessageService.info('Нотатку видалено');
-    this.onSearch();
+  onDelete(id: string) {
+    this.noteHttpService.deleteNote(id).subscribe(() => {
+      this.nzMessageService.info('Нотатку видалено');
+      this.noteSearchService.clearSearchTerm();
+      this.getNoteList();
+    })
+
   }
 
 }

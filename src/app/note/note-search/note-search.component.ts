@@ -1,9 +1,9 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {NzInputDirective, NzInputGroupComponent} from "ng-zorro-antd/input";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {Note} from '../../models/note.module';
-import {NoteService} from '../../services/note.service';
 import {NzIconDirective} from 'ng-zorro-antd/icon';
+import {NoteSearchService} from './note-search.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-note-search',
@@ -17,13 +17,22 @@ import {NzIconDirective} from 'ng-zorro-antd/icon';
   templateUrl: './note-search.component.html',
   styleUrl: './note-search.component.scss'
 })
-export class NoteSearchComponent {
+export class NoteSearchComponent implements OnInit {
   searchTerm = '';
-  private readonly noteService = inject(NoteService);
+  private readonly noteSearchService = inject(NoteSearchService);
+  private readonly router = inject(Router);
+
+
+  ngOnInit() {
+    this.noteSearchService.searchTermObs$.subscribe(term => {
+      this.searchTerm = term;
+    });
+  }
 
 
   onSearch() {
-    this.noteService.setSearchTerm(this.searchTerm);
+    this.router.navigate(['/notes']);
+    this.noteSearchService.setSearchTerm(this.searchTerm);
   }
 
 

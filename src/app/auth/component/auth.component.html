@@ -1,20 +1,25 @@
- <div *ngIf="loading">Loading...</div>
- <div *ngIf="error">{{error}}</div>
+<div *ngIf="loading">Loading...</div>
+<div *ngIf="error">{{ error }}</div>
+<div class="login-form-container">
+  <form nz-form #authForm="ngForm" class="login-form" (ngSubmit)="onSubmit(authForm)">
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Please input your email!">
+        <nz-input-group nzPrefixIcon="user">
+          <input type="email" nz-input ngModel name="email" required/>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Please input your Password!">
+        <nz-input-group nzPrefixIcon="lock">
+          <input nz-input type="password" ngModel name="password" required/>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <button nz-button class="login-form-button login-form-margin"
+            [nzType]="'primary'">{{ isLoginMode ? 'Login' : 'Signup' }}
+    </button>
+    <div>Or <a (click)="onSwitchMode()">{{ isLoginMode ? 'register' : 'login' }} now!</a></div>
 
- <form  (ngSubmit)="onSubmit(authForm)" #authForm="ngForm">
-   <div>
-     <label>Email</label>
-     <input type="email" ngModel name="email" required>
-   </div>
-
-   <div>
-     <label>Password</label>
-     <input type="password" ngModel name="password" required>
-   </div>
-
-   <button type="submit">{{isLoginMode ? 'Login' : 'Signup'}}</button>
-   <br />
-   <button type="button" (click)="onSwitchMode()" >
-    Switch to {{ isLoginMode ? 'Signup' : 'Login'}}
-   </button>
- </form>
+  </form>
+</div>

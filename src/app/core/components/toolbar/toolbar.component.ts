@@ -1,30 +1,31 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {NzPageHeaderComponent, NzPageHeaderExtraDirective, NzPageHeaderModule} from 'ng-zorro-antd/page-header';
 import {NzSpaceComponent, NzSpaceItemDirective, NzSpaceModule} from 'ng-zorro-antd/space';
 import {NzButtonComponent, NzButtonModule} from 'ng-zorro-antd/button';
-import {NzDescriptionsComponent, NzDescriptionsItemComponent, NzDescriptionsModule} from 'ng-zorro-antd/descriptions';
+import {NzDescriptionsModule} from 'ng-zorro-antd/descriptions';
 import {NzGridModule} from 'ng-zorro-antd/grid';
 import {NzStatisticModule} from 'ng-zorro-antd/statistic';
 import {NzTagModule} from 'ng-zorro-antd/tag';
-import {NzInputDirective} from 'ng-zorro-antd/input';
+
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {Note} from '../../../models/note.module';
-import {NoteService} from '../../../services/note.service';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {NoteSearchComponent} from '../../../note/note-search/note-search.component';
 import {Subscription} from 'rxjs';
-import {AuthService} from '../../../auth/services/auth.service';
+import {AuthService, User} from '../../../auth/services/auth.service';
+import {NgIf} from "@angular/common";
+import {NoteSearchService} from '../../../note/note-search/note-search.service';
+import {NzAvatarModule} from 'ng-zorro-antd/avatar';
+import {NzPopoverDirective} from 'ng-zorro-antd/popover';
 
 @Component({
   selector: 'app-toolbar',
   imports: [
+    NzAvatarModule,
     NzPageHeaderExtraDirective,
     NzSpaceComponent,
     NzPageHeaderComponent,
     NzSpaceItemDirective,
     NzButtonComponent,
-    NzDescriptionsComponent,
-    NzDescriptionsItemComponent,
     NzButtonModule,
     NzDescriptionsModule,
     NzGridModule,
@@ -32,21 +33,26 @@ import {AuthService} from '../../../auth/services/auth.service';
     NzSpaceModule,
     NzStatisticModule,
     NzTagModule,
-    NzInputDirective,
     ReactiveFormsModule,
     FormsModule,
     RouterLink,
-    NoteSearchComponent
+    NoteSearchComponent,
+    NgIf,
+    NzPopoverDirective
   ],
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss'
 })
 export class ToolbarComponent implements OnInit, OnDestroy {
+
+  protected readonly noteSearchService = inject(NoteSearchService);
+  private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
+
   private userSub: Subscription | undefined;
   isAuthenticated = false;
+  user: User | null | undefined;
 
-  constructor(private authService: AuthService) {
-  }
 
   ngOnDestroy(): void {
     this.userSub?.unsubscribe();
@@ -55,8 +61,9 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userSub = this.authService.user.subscribe({
         next: user => {
-          console.log(user)
-          this.isAuthenticated = !!user;
+          console.log("user", user);
+          this.isAuthenticated = !!user?.token;
+          this.user = user;
         }
       }
     )
@@ -66,4 +73,8 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     this.authService.logout();
   }
 
+  navigateToMainMenu() {
+    this.noteSearchService.clearSearchTerm();
+    this.router.navigate(['/notes']);
+  }
 }
